@@ -43,7 +43,7 @@ static int luaB_print (lua_State *L) {
     if (i>1) lua_writestring("\t", 1);
     lua_writestring(s, l);
 #ifdef __ANDROID__
-	LOGD("%s", s);
+	printf("%s", s);
 #endif
     lua_pop(L, 1);  /* pop result */
   }
