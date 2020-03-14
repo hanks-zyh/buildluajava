@@ -8,3 +8,7 @@
 /captures
 .externalNativeBuild
 /.idea/
+/.settings/
+/.vscode/
+/.project
+/app/.cxx/*
