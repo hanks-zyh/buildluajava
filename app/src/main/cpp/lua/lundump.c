@@ -48,7 +48,7 @@ static l_noret error(LoadState *S, const char *why) {
 */
 #define LoadVector(S,b,n)	LoadBlock(S,b,(n)*sizeof((b)[0]))
 
-static void LoadBlock (LoadState *S, void *b, size_t size) {
+static void LoadBlock (LoadState *S, void *b, uint32_t size) {
   if (luaZ_read(S->Z, b, size) != 0)
     error(S, "truncated");
 }
@@ -86,7 +86,7 @@ static lua_Integer LoadInteger (LoadState *S) {
 
 
 static TString *LoadString (LoadState *S) {
-  size_t size = LoadByte(S);
+  uint32_t size = LoadByte(S);
   if (size == 0xFF)
     LoadVar(S, size);
   if (size == 0)
@@ -218,14 +218,14 @@ static void LoadFunction (LoadState *S, Proto *f, TString *psource) {
 
 static void checkliteral (LoadState *S, const char *s, const char *msg) {
   char buff[sizeof(LUA_SIGNATURE) + sizeof(LUAC_DATA)]; /* larger than both */
-  size_t len = strlen(s);
+  uint32_t len = strlen(s);
   LoadVector(S, buff, len);
   if (memcmp(s, buff, len) != 0)
     error(S, msg);
 }
 
 
-static void fchecksize (LoadState *S, size_t size, const char *tname) {
+static void fchecksize (LoadState *S, uint32_t size, const char *tname) {
   if (LoadByte(S) != size)
     error(S, luaO_pushfstring(S->L, "%s size mismatch in", tname));
 }
@@ -241,7 +241,7 @@ static void checkHeader (LoadState *S) {
     error(S, "format mismatch in");
   checkliteral(S, LUAC_DATA, "corrupted");
   checksize(S, int);
-  checksize(S, size_t);
+  checksize(S, uint32_t);
   checksize(S, Instruction);
   checksize(S, lua_Integer);
   checksize(S, lua_Number);
